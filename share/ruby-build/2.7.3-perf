@@ -1,0 +1,14 @@
+
+build_package_combined_patch() {
+  local package_name="$1"
+
+  {
+    curl "https://raw.github.com/skaes/rvm-patchsets/raw/master/patches/ruby/2.7.0/railsexpress/01-fix-broken-tests-caused-by-ad.patch" | patch -p1
+    curl "https://raw.github.com/skaes/rvm-patchsets/raw/master/patches/ruby/2.7.0/railsexpress/02-improve-gc-stats.patch" | patch -p1
+    curl "https://raw.github.com/skaes/rvm-patchsets/raw/master/patches/ruby/2.7.0/railsexpress/03-detailed-stack-trace.patch" | patch -p1
+    curl "https://raw.github.com/skaes/rvm-patchsets/raw/master/patches/ruby/2.7.0/railsexpress/04-malloc-trim.patch" | patch -p1
+  } >&4 2>&1
+}
+
+install_package "openssl-1.1.1j" "https://www.openssl.org/source/openssl-1.1.1j.tar.gz#aaf2fcb575cdf6491b98ab4829abf78a3dec8402b8b81efc8f23c00d443981bf" mac_openssl --if has_broken_mac_openssl
+install_package "ruby-2.7.3" "https://cache.ruby-lang.org/pub/ruby/2.7/ruby-2.7.3.tar.bz2#3e90e5a41d4df90e19c307ab0fb41789992c0b0128e6bbaa669b89ed44a0b68b" ldflags_dirs combined_patch enable_shared standard verify_openssl
