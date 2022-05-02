@@ -1,0 +1,14 @@
+
+build_package_combined_patch() {
+  local package_name="$1"
+
+  {
+    curl "https://github.com/ruby/ruby/commit/ed01cc8fdc845b1db258eb3e35b3ba834463672e.patch" | patch -p1 -R
+    curl "https://raw.githubusercontent.com/skaes/rvm-patchsets/master/patches/ruby/3.0.4/railsexpress/01-fix-with-openssl-dir-option.patch" | patch -p1
+    curl "https://raw.githubusercontent.com/skaes/rvm-patchsets/master/patches/ruby/3.0.4/railsexpress/02-improve-gc-stats.patch" | patch -p1
+    curl "https://raw.githubusercontent.com/skaes/rvm-patchsets/master/patches/ruby/3.0.4/railsexpress/03-malloc-trim.patch" | patch -p1
+  } >&4 2>&1
+}
+
+install_package "openssl-1.1.1n" "https://www.openssl.org/source/openssl-1.1.1n.tar.gz#40dceb51a4f6a5275bde0e6bf20ef4b91bfc32ed57c0552e2e8e15463372b17a" mac_openssl --if has_broken_mac_openssl
+install_package "ruby-3.0.4" "https://cache.ruby-lang.org/pub/ruby/3.0/ruby-3.0.4.tar.gz#70b47c207af04bce9acea262308fb42893d3e244f39a4abc586920a1c723722b" ldflags_dirs combined_patch enable_shared standard verify_openssl
