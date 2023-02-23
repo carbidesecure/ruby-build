@@ -1,0 +1,13 @@
+
+build_package_combined_patch() {
+  local package_name="$1"
+
+  {
+    curl "https://raw.githubusercontent.com/skaes/rvm-patchsets/master/patches/ruby/3.2.1/railsexpress/01-improve-gc-stats.patch" | patch -p1
+    curl "https://raw.githubusercontent.com/skaes/rvm-patchsets/master/patches/ruby/3.2.1/railsexpress/02-malloc-trim-patch.patch" | patch -p1
+    curl "https://raw.githubusercontent.com/skaes/rvm-patchsets/master/patches/ruby/3.2.1/railsexpress/03-fix-bigdecimal-linker-problems-on-macos.patch" | patch -p1
+  } >&4 2>&1
+}
+
+install_package "openssl-3.0.8" "https://www.openssl.org/source/openssl-3.0.8.tar.gz#6c13d2bf38fdf31eac3ce2a347073673f5d63263398f1f69d0df4a41253e4b3e" openssl --if needs_openssl_102_300
+install_package "ruby-3.2.1" "https://cache.ruby-lang.org/pub/ruby/3.2/ruby-3.2.1.tar.gz#13d67901660ee3217dbd9dd56059346bd4212ce64a69c306ef52df64935f8dbd" ldflags_dirs combined_patch enable_shared standard verify_openssl
