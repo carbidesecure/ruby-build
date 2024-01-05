@@ -1,0 +1,12 @@
+
+build_package_combined_patch() {
+  local package_name="$1"
+
+  {
+    curl "https://raw.githubusercontent.com/skaes/rvm-patchsets/master/patches/ruby/3.3.0/railsexpress/01-improve-gc-stats.patch" | patch -p1
+    curl "https://raw.githubusercontent.com/skaes/rvm-patchsets/master/patches/ruby/3.3.0/railsexpress/02-fix-configure-for-arm64-under-docker.patch" | patch -p1
+  } >&4 2>&1
+}
+
+install_package "openssl-3.1.4" "https://www.openssl.org/source/openssl-3.1.4.tar.gz#840af5366ab9b522bde525826be3ef0fb0af81c6a9ebd84caa600fea1731eee3" openssl --if needs_openssl:1.0.2-3.x.x
+install_package "ruby-3.3.0" "https://cache.ruby-lang.org/pub/ruby/3.3/ruby-3.3.0.tar.gz#96518814d9832bece92a85415a819d4893b307db5921ae1f0f751a9a89a56b7d" combined_patch enable_shared standard
